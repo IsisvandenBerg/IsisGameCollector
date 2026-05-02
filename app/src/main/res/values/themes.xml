@@ -1,0 +1,33 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.IsisGameCollector" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#788C3F</item>
+        <item name="colorPrimaryVariant">#5E6D31</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Customize ActionBar -->
+        <item name="actionBarStyle">@style/Theme.IsisGameCollector.ActionBar</item>
+        <item name="actionBarTheme">@style/Theme.IsisGameCollector.AppBarOverlay</item>
+        <item name="actionOverflowButtonStyle">@style/Theme.IsisGameCollector.Overflow</item>
+    </style>
+
+    <style name="Theme.IsisGameCollector.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="background">@color/white</item>
+    </style>
+
+    <style name="Theme.IsisGameCollector.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="colorControlNormal">@color/black</item>
+    </style>
+
+    <style name="Theme.IsisGameCollector.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/black</item>
+    </style>
+
+    <style name="Theme.IsisGameCollector" parent="Base.Theme.IsisGameCollector" />
+</resources>
