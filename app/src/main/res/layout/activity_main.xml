@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#DFEFCD">
+    android:background="#B5A8E4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -21,7 +21,7 @@
             android:layout_marginTop="64dp"
             android:text="Game Collector App"
             android:textAlignment="center"
-            android:textColor="#788C3F"
+            android:textColor="#5C4E92"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Forgot password?"
-            android:textColor="#788C3F"
+            android:textColor="#5C4E92"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/password_login"
             app:layout_constraintTop_toBottomOf="@+id/password_login" />
@@ -68,7 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginTop="32dp"
-            android:backgroundTint="#B0CC5A"
+            android:backgroundTint="#7E6BB3"
             android:text="Login"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,7 @@
             android:layout_marginBottom="32dp"
             android:padding="16dp"
             android:text="Create Account"
-            android:textColor="#788C3F"
+            android:textColor="#5C4E92"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

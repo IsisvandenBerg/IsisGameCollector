@@ -11,5 +11,5 @@
         android:layout_height="wrap_content"
         android:text="Console Name"
         android:textSize="24sp"
-        android:textColor="#788C3F" />
+        android:textColor="#5C4E92" />
 </LinearLayout>
