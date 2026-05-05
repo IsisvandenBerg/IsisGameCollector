@@ -39,6 +39,7 @@
                     android:id="@+id/titletext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:hint="Console name" />
             </LinearLayout>
 
@@ -57,6 +58,7 @@
                     android:id="@+id/hoteltext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:hint="Brand" />
             </LinearLayout>
 
@@ -75,6 +77,7 @@
                     android:id="@+id/startdatetext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:hint="MM/DD/YY" />
             </LinearLayout>
 
@@ -94,6 +97,7 @@
                     android:id="@+id/acquisitiondatetext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:hint="MM/DD/YY" />
             </LinearLayout>
 

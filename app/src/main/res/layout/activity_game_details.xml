@@ -35,6 +35,7 @@
                     android:id="@+id/gameNameText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:hint="Game title"
                     android:inputType="text" />
             </LinearLayout>
@@ -55,6 +56,7 @@
                     android:id="@+id/gameReleaseDateText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="48dp"
                     android:inputType="date"
                     android:hint="MM/DD/YY" />
             </LinearLayout>
