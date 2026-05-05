@@ -52,6 +52,9 @@ public class Game {
 
     @Override
     public String toString() {
+        if (gameReleaseDate == null || gameReleaseDate.isEmpty()) {
+            return gameName;
+        }
         return gameName + " (" + gameReleaseDate + ")";
     }
 }

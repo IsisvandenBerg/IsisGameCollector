@@ -26,7 +26,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Title: "
                     android:textSize="18sp" />
@@ -46,7 +46,7 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="Rel. Date: "
                     android:textSize="18sp" />
@@ -58,6 +58,17 @@
                     android:inputType="date"
                     android:hint="MM/DD/YY" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btnSaveGame"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginTop="32dp"
+                android:layout_gravity="center_horizontal"
+                android:minWidth="200dp"
+                android:backgroundTint="#7E6BB3"
+                android:text="Save Game"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         </LinearLayout>
     </ScrollView>

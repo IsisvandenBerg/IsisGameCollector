@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ public class GameDetails extends AppCompatActivity {
         repository = new Repository(getApplication());
         editName = findViewById(R.id.gameNameText);
         editDate = findViewById(R.id.gameReleaseDateText);
+        Button btnSave = findViewById(R.id.btnSaveGame);
 
         gameID = getIntent().getIntExtra("id", -1);
 
@@ -95,11 +97,53 @@ public class GameDetails extends AppCompatActivity {
             }
         });
 
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveGame();
+            }
+        });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void saveGame() {
+        String gameDateStr = editDate.getText().toString();
+        Date gameD;
+        try {
+            gameD = sdf.parse(gameDateStr);
+        } catch (ParseException e) {
+            Toast.makeText(this, "Please enter date in MM/dd/yy format", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (consoleRelease != null) {
+            try {
+                Date startD = sdf.parse(consoleRelease);
+                if (gameD.before(startD)) {
+                    Toast.makeText(this, "Game release date must be after console release (" + consoleRelease + ")", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            } catch (ParseException e) {
+            }
+        }
+
+        Game game;
+        if (gameID == -1) {
+            if (repository.getAllGames().size() == 0) gameID = 1;
+            else
+                gameID = repository.getAllGames().get(repository.getAllGames().size() - 1).getGameID() + 1;
+            game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), consoleID);
+            repository.insert(game);
+        } else {
+            game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), consoleID);
+            repository.update(game);
+        }
+        this.finish();
     }
 
     private void updateLabel() {
@@ -115,41 +159,6 @@ public class GameDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            this.finish();
-            return true;
-        }
-        if (item.getItemId() == R.id.gamesave) {
-            String gameDateStr = editDate.getText().toString();
-            Date gameD;
-            try {
-                gameD = sdf.parse(gameDateStr);
-            } catch (ParseException e) {
-                Toast.makeText(this, "Please enter date in MM/dd/yy format", Toast.LENGTH_LONG).show();
-                return true;
-            }
-
-            if (consoleRelease != null) {
-                try {
-                    Date startD = sdf.parse(consoleRelease);
-                    if (gameD.before(startD)) {
-                        Toast.makeText(this, "Game release date must be after console release (" + consoleRelease + ")", Toast.LENGTH_LONG).show();
-                        return true;
-                    }
-                } catch (ParseException e) {
-                }
-            }
-
-            Game game;
-            if (gameID == -1) {
-                if (repository.getAllGames().size() == 0) gameID = 1;
-                else
-                    gameID = repository.getAllGames().get(repository.getAllGames().size() - 1).getGameID() + 1;
-                game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), consoleID);
-                repository.insert(game);
-            } else {
-                game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), consoleID);
-                repository.update(game);
-            }
             this.finish();
             return true;
         }
