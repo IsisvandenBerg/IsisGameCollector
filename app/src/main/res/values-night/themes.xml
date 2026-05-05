@@ -4,6 +4,11 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_primary</item>
         <item name="colorPrimaryVariant">@color/purple_primary_variant</item>
+        <item name="colorSecondary">@color/purple_accent</item>
+        <item name="colorSecondaryVariant">@color/purple_primary</item>
+        <item name="colorAccent">@color/purple_accent</item>
+        <item name="colorControlActivated">@color/purple_accent</item>
+        <item name="colorControlHighlight">@color/purple_highlight</item>
         <item name="colorOnPrimary">@color/white</item>
 
         <!-- Status bar color. -->

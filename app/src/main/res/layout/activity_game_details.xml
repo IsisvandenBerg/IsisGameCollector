@@ -67,7 +67,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="64dp"
-                android:backgroundTint="#7E6BB3"
+                android:backgroundTint="@color/purple_accent"
                 android:minWidth="200dp"
                 android:text="Save game"
                 android:textAllCaps="false"
