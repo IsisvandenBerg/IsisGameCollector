@@ -9,12 +9,14 @@ public class Game {
     private int gameID;
     private String gameName;
     private String gameReleaseDate;
+    private String acquisitionDate;
     private int consoleID;
 
-    public Game(int gameID, String gameName, String gameReleaseDate, int consoleID) {
+    public Game(int gameID, String gameName, String gameReleaseDate, String acquisitionDate, int consoleID) {
         this.gameID = gameID;
         this.gameName = gameName;
         this.gameReleaseDate = gameReleaseDate;
+        this.acquisitionDate = acquisitionDate;
         this.consoleID = consoleID;
     }
 
@@ -40,6 +42,14 @@ public class Game {
 
     public void setGameReleaseDate(String gameReleaseDate) {
         this.gameReleaseDate = gameReleaseDate;
+    }
+
+    public String getAcquisitionDate() {
+        return acquisitionDate;
+    }
+
+    public void setAcquisitionDate(String acquisitionDate) {
+        this.acquisitionDate = acquisitionDate;
     }
 
     public int getConsoleID() {

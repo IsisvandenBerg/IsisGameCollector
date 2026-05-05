@@ -34,14 +34,18 @@ import java.util.Locale;
 public class GameDetails extends AppCompatActivity {
     EditText editName;
     EditText editDate;
+    EditText editAcquisitionDate;
     int gameID;
     String name;
     String date;
+    String acquisitionDate;
     int consoleID;
     String consoleRelease;
     Repository repository;
     DatePickerDialog.OnDateSetListener dateListener;
+    DatePickerDialog.OnDateSetListener acquisitionDateListener;
     final Calendar myCalendar = Calendar.getInstance();
+    final Calendar myCalendarAcquisition = Calendar.getInstance();
     String myFormat = "MM/dd/yy";
     SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
@@ -54,17 +58,20 @@ public class GameDetails extends AppCompatActivity {
         repository = new Repository(getApplication());
         editName = findViewById(R.id.gameNameText);
         editDate = findViewById(R.id.gameReleaseDateText);
+        editAcquisitionDate = findViewById(R.id.gameAcquisitionDateText);
         Button btnSave = findViewById(R.id.btnSaveGame);
 
         gameID = getIntent().getIntExtra("id", -1);
 
         name = getIntent().getStringExtra("name");
         date = getIntent().getStringExtra("date");
+        acquisitionDate = getIntent().getStringExtra("acquisitionDate");
         consoleID = getIntent().getIntExtra("consoleID", -1);
         consoleRelease = getIntent().getStringExtra("consoleRelease");
 
         editName.setText(name);
         editDate.setText(date);
+        editAcquisitionDate.setText(acquisitionDate);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -97,6 +104,25 @@ public class GameDetails extends AppCompatActivity {
             }
         });
 
+        acquisitionDateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                myCalendarAcquisition.set(Calendar.YEAR, year);
+                myCalendarAcquisition.set(Calendar.MONTH, monthOfYear);
+                myCalendarAcquisition.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabelAcquisition();
+            }
+        };
+
+        editAcquisitionDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(GameDetails.this, acquisitionDateListener, myCalendarAcquisition
+                        .get(Calendar.YEAR), myCalendarAcquisition.get(Calendar.MONTH),
+                        myCalendarAcquisition.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,11 +139,18 @@ public class GameDetails extends AppCompatActivity {
 
     private void saveGame() {
         String gameDateStr = editDate.getText().toString();
-        Date gameD;
+        String acqDateStr = editAcquisitionDate.getText().toString();
+        Date gameD, acqD;
         try {
             gameD = sdf.parse(gameDateStr);
+            acqD = sdf.parse(acqDateStr);
         } catch (ParseException e) {
-            Toast.makeText(this, "Please enter date in MM/dd/yy format", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please enter dates in MM/dd/yy format", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (acqD.before(gameD)) {
+            Toast.makeText(this, "Acquisition date cannot be before release date", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -137,10 +170,10 @@ public class GameDetails extends AppCompatActivity {
             if (repository.getAllGames().size() == 0) gameID = 1;
             else
                 gameID = repository.getAllGames().get(repository.getAllGames().size() - 1).getGameID() + 1;
-            game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), consoleID);
+            game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), editAcquisitionDate.getText().toString(), consoleID);
             repository.insert(game);
         } else {
-            game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), consoleID);
+            game = new Game(gameID, editName.getText().toString(), editDate.getText().toString(), editAcquisitionDate.getText().toString(), consoleID);
             repository.update(game);
         }
         this.finish();
@@ -148,6 +181,10 @@ public class GameDetails extends AppCompatActivity {
 
     private void updateLabel() {
         editDate.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private void updateLabelAcquisition() {
+        editAcquisitionDate.setText(sdf.format(myCalendarAcquisition.getTime()));
     }
 
     @Override
@@ -177,7 +214,7 @@ public class GameDetails extends AppCompatActivity {
         if (item.getItemId() == R.id.share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Game: " + editName.getText().toString() + "\nRelease Date: " + editDate.getText().toString());
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Game: " + editName.getText().toString() + "\nRelease Date: " + editDate.getText().toString() + "\nAcquisition Date: " + editAcquisitionDate.getText().toString());
             sendIntent.putExtra(Intent.EXTRA_TITLE, "Game Details");
             sendIntent.setType("text/plain");
             Intent shareIntent = Intent.createChooser(sendIntent, null);

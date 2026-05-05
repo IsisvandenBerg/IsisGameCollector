@@ -127,7 +127,8 @@ public class ConsoleList extends AppCompatActivity {
             for (Game game : allGames) {
                 if (game.getConsoleID() == console.getConsoleID()) {
                     sharedString.append(" - ").append(game.getGameName())
-                            .append(" (").append(game.getGameReleaseDate()).append(")\n");
+                            .append(" (Rel: ").append(game.getGameReleaseDate())
+                            .append(", Acq: ").append(game.getAcquisitionDate()).append(")\n");
                     hasGames = true;
                 }
             }

@@ -143,7 +143,7 @@ public class ConsoleDetails extends AppCompatActivity {
 
     private void updateGameSpinner() {
         List<Game> filteredGames = new ArrayList<>();
-        filteredGames.add(new Game(-1, "Select Game", "", -1));
+        filteredGames.add(new Game(-1, "Select Game", "", "", -1));
 
         List<Game> allGames = repository.getAllGames();
         if (allGames != null) {
@@ -165,6 +165,7 @@ public class ConsoleDetails extends AppCompatActivity {
                     intent.putExtra("id", selectedGame.getGameID());
                     intent.putExtra("name", selectedGame.getGameName());
                     intent.putExtra("date", selectedGame.getGameReleaseDate());
+                    intent.putExtra("acquisitionDate", selectedGame.getAcquisitionDate());
                     intent.putExtra("consoleID", selectedGame.getConsoleID());
                     intent.putExtra("consoleRelease", editReleaseDate.getText().toString());
                     startActivity(intent);

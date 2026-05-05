@@ -33,6 +33,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                     intent.putExtra("id", current.getGameID());
                     intent.putExtra("name", current.getGameName());
                     intent.putExtra("date", current.getGameReleaseDate());
+                    intent.putExtra("acquisitionDate", current.getAcquisitionDate());
                     intent.putExtra("consoleID",current.getConsoleID());
                     context.startActivity(intent);
                 }
