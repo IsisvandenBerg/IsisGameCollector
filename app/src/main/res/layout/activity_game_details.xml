@@ -35,8 +35,8 @@
                     android:id="@+id/gameNameText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:hint="Game Title" />
+                    android:hint="Game title"
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Rel. Date: "
+                    android:text="Rel. date: "
                     android:textSize="18sp" />
 
                 <EditText
@@ -63,11 +63,12 @@
                 android:id="@+id/btnSaveGame"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
-                android:layout_marginTop="32dp"
                 android:layout_gravity="center_horizontal"
-                android:minWidth="200dp"
+                android:layout_marginTop="64dp"
                 android:backgroundTint="#7E6BB3"
-                android:text="Save Game"
+                android:minWidth="200dp"
+                android:text="Save game"
+                android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         </LinearLayout>

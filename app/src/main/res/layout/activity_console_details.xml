@@ -33,13 +33,13 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Console Name" />
+                    android:text="Console name" />
 
                 <EditText
                     android:id="@+id/titletext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Console Name" />
+                    android:hint="Console name" />
             </LinearLayout>
 
             <!-- Brand -->
@@ -69,7 +69,7 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Rel. Date" />
+                    android:text="Rel. date" />
 
                 <EditText
                     android:id="@+id/startdatetext"
@@ -87,7 +87,7 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Acq. Date" />
+                    android:text="Acq. date" />
 
                 <EditText
 
