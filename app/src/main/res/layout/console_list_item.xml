@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:text="Console Name"
             android:textSize="20sp"
-            android:textColor="#788C3F"
+            android:textColor="@color/purple_primary"
             android:padding="8dp"
             android:background="?attr/selectableItemBackground"/>
 
@@ -31,7 +31,7 @@
             android:src="@drawable/add"
             android:contentDescription="Add Game"
             android:background="?attr/selectableItemBackground"
-            app:tint="#788C3F"/>
+            app:tint="@color/purple_accent"/>
 
         <ImageView
             android:id="@+id/expand_icon"
@@ -42,7 +42,7 @@
             android:visibility="gone"
             android:contentDescription="Show Games"
             android:background="?attr/selectableItemBackground"
-            app:tint="#788C3F"/>
+            app:tint="@color/purple_accent"/>
     </LinearLayout>
 
     <Spinner

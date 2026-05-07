@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DFEFCD"
+    android:background="#B5A8E4"
     tools:context=".UI.ConsoleDetails">
 
     <ScrollView
@@ -22,7 +22,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Console Name -->
+            <!-- Console Title -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,17 +31,17 @@
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="Console Name: "
-                    android:textSize="18sp"
-                    android:textColor="#788C3F" />
+                    android:text="Title: "
+                    android:textColor="@color/purple_primary"
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/titletext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:hint="Console name"
+                    android:hint="Console title"
                     android:inputType="text"
+                    android:minHeight="48dp"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:text="Brand: "
                     android:textSize="18sp"
-                    android:textColor="#788C3F" />
+                    android:textColor="@color/purple_primary" />
 
                 <EditText
                     android:id="@+id/hoteltext"
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:text="Rel. Date: "
                     android:textSize="18sp"
-                    android:textColor="#788C3F" />
+                    android:textColor="@color/purple_primary" />
 
                 <EditText
                     android:id="@+id/startdatetext"
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:text="Acq. Date: "
                     android:textSize="18sp"
-                    android:textColor="#788C3F" />
+                    android:textColor="@color/purple_primary" />
 
                 <EditText
                     android:id="@+id/acquisitiondatetext"
@@ -127,7 +127,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="64dp"
-                android:backgroundTint="#B0CC5A"
+                android:backgroundTint="@color/purple_accent"
                 android:minWidth="200dp"
                 android:text="Save Console"
                 android:textAllCaps="false"
