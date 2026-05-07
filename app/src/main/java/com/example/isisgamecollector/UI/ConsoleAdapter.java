@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,12 +19,15 @@ import com.example.isisgamecollector.UI.entities.Console;
 import com.example.isisgamecollector.UI.entities.Game;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleViewHolder> {
     private List<Console> mConsoles;
     private final Context context;
     private final LayoutInflater mInflater;
+    private final Set<Integer> expandedConsoleIds = new HashSet<>();
 
     public ConsoleAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
@@ -37,14 +38,14 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
         private final TextView consoleItemView;
         private final ImageView addGameIcon;
         private final ImageView expandIcon;
-        private final Spinner gameSpinner;
+        private final LinearLayout gameListContainer;
 
         public ConsoleViewHolder(@NonNull View itemView) {
             super(itemView);
             consoleItemView = itemView.findViewById(R.id.textView2);
             addGameIcon = itemView.findViewById(R.id.add_game_icon);
             expandIcon = itemView.findViewById(R.id.expand_icon);
-            gameSpinner = itemView.findViewById(R.id.game_list_spinner);
+            gameListContainer = itemView.findViewById(R.id.game_list_container);
 
             consoleItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,36 +81,17 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
             expandIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gameSpinner.performClick();
-                }
-            });
-
-            gameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (position > 0) { // Skip header
-                        List<Game> gamesForThisConsole = (List<Game>) gameSpinner.getTag();
-                        if (gamesForThisConsole != null && position <= gamesForThisConsole.size()) {
-                            Game selectedGame = gamesForThisConsole.get(position - 1);
-                            Intent intent = new Intent(context, GameDetails.class);
-                            intent.putExtra("id", selectedGame.getGameID());
-                            intent.putExtra("name", selectedGame.getGameName());
-                            intent.putExtra("date", selectedGame.getGameReleaseDate());
-                            intent.putExtra("acquisitionDate", selectedGame.getAcquisitionDate());
-                            intent.putExtra("consoleID", selectedGame.getConsoleID());
-                            // We need console release for date validation in GameDetails
-                            int consolePos = getAdapterPosition();
-                            if (consolePos != RecyclerView.NO_POSITION) {
-                                intent.putExtra("consoleRelease", mConsoles.get(consolePos).getConsoleReleaseDate());
-                            }
-                            context.startActivity(intent);
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        int consoleId = mConsoles.get(position).getConsoleID();
+                        if (expandedConsoleIds.contains(consoleId)) {
+                            expandedConsoleIds.remove(consoleId);
+                        } else {
+                            expandedConsoleIds.add(consoleId);
                         }
-                        gameSpinner.setSelection(0); // Reset for next click
+                        notifyItemChanged(position);
                     }
                 }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
             });
         }
     }
@@ -142,23 +124,45 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
 
             if (!filteredGames.isEmpty()) {
                 holder.expandIcon.setVisibility(View.VISIBLE);
+                boolean isExpanded = expandedConsoleIds.contains(current.getConsoleID());
                 
-                List<String> displayStrings = new ArrayList<>();
-                displayStrings.add("Games for " + current.getConsoleName() + ":");
-                for (Game g : filteredGames) {
-                    displayStrings.add(g.getGameName());
+                if (isExpanded) {
+                    holder.expandIcon.setImageResource(android.R.drawable.arrow_up_float);
+                    holder.gameListContainer.setVisibility(View.VISIBLE);
+                    holder.gameListContainer.removeAllViews();
+                    
+                    for (Game game : filteredGames) {
+                        TextView gameView = new TextView(context);
+                        String bulletText = "• " + game.getGameName();
+                        gameView.setText(bulletText);
+                        gameView.setPadding(32, 8, 16, 8);
+                        gameView.setTextSize(16);
+                        gameView.setTextColor(context.getColor(R.color.purple_primary));
+                        gameView.setBackgroundResource(android.R.drawable.list_selector_background);
+                        gameView.setOnClickListener(v -> {
+                            Intent intent = new Intent(context, GameDetails.class);
+                            intent.putExtra("id", game.getGameID());
+                            intent.putExtra("name", game.getGameName());
+                            intent.putExtra("date", game.getGameReleaseDate());
+                            intent.putExtra("acquisitionDate", game.getAcquisitionDate());
+                            intent.putExtra("consoleID", game.getConsoleID());
+                            intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
+                            context.startActivity(intent);
+                        });
+                        holder.gameListContainer.addView(gameView);
+                    }
+                } else {
+                    holder.expandIcon.setImageResource(android.R.drawable.arrow_down_float);
+                    holder.gameListContainer.setVisibility(View.GONE);
                 }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, displayStrings);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                holder.gameSpinner.setAdapter(adapter);
-                holder.gameSpinner.setTag(filteredGames);
             } else {
                 holder.expandIcon.setVisibility(View.GONE);
+                holder.gameListContainer.setVisibility(View.GONE);
             }
         } else {
             holder.consoleItemView.setText("No console name");
             holder.expandIcon.setVisibility(View.GONE);
+            holder.gameListContainer.setVisibility(View.GONE);
         }
     }
 

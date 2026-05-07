@@ -45,11 +45,13 @@
             app:tint="@color/purple_accent"/>
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/game_list_spinner"
+    <LinearLayout
+        android:id="@+id/game_list_container"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:visibility="invisible"
-        android:spinnerMode="dialog" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingLeft="24dp"
+        android:paddingBottom="8dp" />
 
 </LinearLayout>
