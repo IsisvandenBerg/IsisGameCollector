@@ -20,15 +20,17 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Game Title -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Title: "
+                    android:textColor="@color/purple_primary"
                     android:textSize="18sp" />
 
                 <EditText
@@ -37,9 +39,11 @@
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:hint="Game title"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textSize="18sp" />
             </LinearLayout>
 
+            <!-- Release Date -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,9 +51,10 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="Rel. date: "
+                    android:text="Rel. Date: "
+                    android:textColor="@color/purple_primary"
                     android:textSize="18sp" />
 
                 <EditText
@@ -58,9 +63,11 @@
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:inputType="date"
-                    android:hint="MM/DD/YY" />
+                    android:hint="MM/DD/YY"
+                    android:textSize="18sp" />
             </LinearLayout>
 
+            <!-- Acquisition Date -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,9 +75,10 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:text="Acq. date: "
+                    android:text="Acq. Date: "
+                    android:textColor="@color/purple_primary"
                     android:textSize="18sp" />
 
                 <EditText
@@ -79,7 +87,8 @@
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:inputType="date"
-                    android:hint="MM/DD/YY" />
+                    android:hint="MM/DD/YY"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <Button
