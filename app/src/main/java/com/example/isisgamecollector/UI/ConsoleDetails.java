@@ -119,6 +119,12 @@ public class ConsoleDetails extends AppCompatActivity {
             return;
         }
 
+        Date today = new Date();
+        if (acquisitionD.after(today)) {
+            Toast.makeText(this, "Acquisition date cannot be in the future", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (acquisitionD.before(releaseD)) {
             Toast.makeText(this, "Acquisition date cannot be before release date", Toast.LENGTH_LONG).show();
             return;

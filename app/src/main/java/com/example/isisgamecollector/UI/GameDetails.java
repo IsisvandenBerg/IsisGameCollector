@@ -149,6 +149,12 @@ public class GameDetails extends AppCompatActivity {
             return;
         }
 
+        Date today = new Date();
+        if (acqD.after(today)) {
+            Toast.makeText(this, "Acquisition date cannot be in the future", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (acqD.before(gameD)) {
             Toast.makeText(this, "Acquisition date cannot be before release date", Toast.LENGTH_LONG).show();
             return;
