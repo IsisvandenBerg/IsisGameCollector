@@ -138,7 +138,9 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
                         gameView.setPadding(32, 8, 16, 8);
                         gameView.setTextSize(16);
                         gameView.setTextColor(context.getColor(R.color.purple_primary));
-                        gameView.setBackgroundResource(android.R.drawable.list_selector_background);
+                        gameView.setBackgroundResource(R.drawable.game_item_selector);
+                        gameView.setClickable(true);
+                        gameView.setFocusable(true);
                         gameView.setOnClickListener(v -> {
                             Intent intent = new Intent(context, GameDetails.class);
                             intent.putExtra("id", game.getGameID());
