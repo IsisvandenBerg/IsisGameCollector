@@ -1,9 +1,6 @@
 package com.example.isisgamecollector.UI;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -225,28 +222,6 @@ public class GameDetails extends AppCompatActivity {
             sendIntent.setType("text/plain");
             Intent shareIntent = Intent.createChooser(sendIntent, null);
             startActivity(shareIntent);
-            return true;
-        }
-        if (item.getItemId() == R.id.notify) {
-            String dateFromScreen = editDate.getText().toString();
-            Date myDate = null;
-            try {
-                myDate = sdf.parse(dateFromScreen);
-            } catch (ParseException e) {
-                Toast.makeText(this, "Invalid date format", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            try {
-                Long trigger = myDate.getTime();
-                Intent intent = new Intent(GameDetails.this, MyReceiver.class);
-                intent.putExtra("key", "Game: " + editName.getText().toString() + " is released today!");
-                PendingIntent sender = PendingIntent.getBroadcast(GameDetails.this, gameID, intent, PendingIntent.FLAG_IMMUTABLE);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
-                Toast.makeText(this, "Alert set for game release date", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return true;
         }
 

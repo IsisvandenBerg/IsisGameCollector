@@ -1,10 +1,6 @@
 package com.example.isisgamecollector.UI;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -162,10 +158,6 @@ public class ConsoleDetails extends AppCompatActivity {
             this.finish();
             return true;
         }
-        if (item.getItemId() == R.id.consolesave) {
-            saveConsole();
-            return true;
-        }
         if (item.getItemId() == R.id.consoledelete) {
             for (Console con : repository.getmAllConsoles()) {
                 if (con.getConsoleID() == consoleID) {
@@ -186,27 +178,6 @@ public class ConsoleDetails extends AppCompatActivity {
                     }
                 }
             }
-            return true;
-        }
-        if (item.getItemId() == R.id.notify) {
-            String startStr = editReleaseDate.getText().toString();
-            Date startD;
-            try {
-                startD = sdf.parse(startStr);
-            } catch (ParseException e) {
-                Toast.makeText(this, "Invalid date format", Toast.LENGTH_LONG).show();
-                return true;
-            }
-
-            // Start Date Alert
-            Long triggerStart = startD.getTime();
-            Intent intentStart = new Intent(ConsoleDetails.this, MyReceiver.class);
-            intentStart.putExtra("key", editName.getText().toString() + " was released on this day!");
-            PendingIntent senderStart = PendingIntent.getBroadcast(ConsoleDetails.this, consoleID * 100, intentStart, PendingIntent.FLAG_IMMUTABLE);
-            AlarmManager alarmManagerStart = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManagerStart.set(AlarmManager.RTC_WAKEUP, triggerStart, senderStart);
-
-            Toast.makeText(this, "Alert set for release date", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
