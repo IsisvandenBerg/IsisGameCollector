@@ -5,7 +5,4 @@
         android:id="@+id/gamedelete"
         android:title="Delete game"
         app:showAsAction="never" />
-    <item android:title="Share"
-        android:id="@+id/share"
-        app:showAsAction="never"/>
 </menu>

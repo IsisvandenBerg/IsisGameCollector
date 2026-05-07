@@ -214,17 +214,6 @@ public class GameDetails extends AppCompatActivity {
             return true;
         }
 
-        if (item.getItemId() == R.id.share) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Game: " + editName.getText().toString() + "\nRelease Date: " + editDate.getText().toString() + "\nAcquisition Date: " + editAcquisitionDate.getText().toString());
-            sendIntent.putExtra(Intent.EXTRA_TITLE, "Game Details");
-            sendIntent.setType("text/plain");
-            Intent shareIntent = Intent.createChooser(sendIntent, null);
-            startActivity(shareIntent);
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }
