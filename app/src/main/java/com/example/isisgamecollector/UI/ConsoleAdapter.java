@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,8 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleViewHolder> {
+public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleViewHolder> implements Filterable {
     private List<Console> mConsoles;
+    private List<Console> mConsolesFull;
     private final Context context;
     private final LayoutInflater mInflater;
     private final Set<Integer> expandedConsoleIds = new HashSet<>();
@@ -175,6 +178,42 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
 
     public void setConsoles(List<Console> consoles) {
         mConsoles = consoles;
+        mConsolesFull = new ArrayList<>(consoles);
         notifyDataSetChanged();
     }
+
+    @Override
+    public Filter getFilter() {
+        return consoleFilter;
+    }
+
+    private final Filter consoleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Console> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(mConsolesFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (Console item : mConsolesFull) {
+                    if (item.getConsoleName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mConsoles.clear();
+            mConsoles.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 }

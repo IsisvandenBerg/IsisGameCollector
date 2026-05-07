@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,7 +22,10 @@ import com.example.isisgamecollector.UI.entities.Game;
 import com.example.isisgamecollector.UI.entities.Console;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ConsoleList extends AppCompatActivity {
     private Repository repository;
@@ -86,13 +90,30 @@ public class ConsoleList extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_console_list, menu);
+        
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                consoleAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.share_all) {
-            shareAllConsolesAndGames();
+            generateCollectionReport();
             return true;
         }
         if (item.getItemId() == R.id.logout) {
@@ -105,7 +126,7 @@ public class ConsoleList extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void shareAllConsolesAndGames() {
+    private void generateCollectionReport() {
         List<Console> allConsoles = repository.getmAllConsoles();
         List<Game> allGames = repository.getAllGames();
 
@@ -113,37 +134,57 @@ public class ConsoleList extends AppCompatActivity {
             return;
         }
 
-        StringBuilder sharedString = new StringBuilder();
-        sharedString.append("My Console Collection:\n\n");
+        String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
+        
+        StringBuilder report = new StringBuilder();
+        report.append("ISIS GAME COLLECTOR - FULL COLLECTION REPORT\n");
+        report.append("Generated on: ").append(timeStamp).append("\n");
+        report.append("==========================================\n\n");
+
+        // Column headers for Console
+        report.append(String.format("%-20s | %-15s | %-12s | %-12s\n", "CONSOLE NAME", "BRAND", "REL. DATE", "ACQ. DATE"));
+        report.append("--------------------------------------------------------------------------\n");
 
         for (Console console : allConsoles) {
-            sharedString.append("Console: ").append(console.getConsoleName()).append("\n");
-            sharedString.append("Brand: ").append(console.getConsoleBrand()).append("\n");
-            sharedString.append("Release Date: ").append(console.getConsoleReleaseDate()).append("\n");
-            sharedString.append("Acquisition Date: ").append(console.getAcquisitionDate()).append("\n");
+            report.append(String.format("%-20s | %-15s | %-12s | %-12s\n", 
+                truncate(console.getConsoleName(), 20), 
+                truncate(console.getConsoleBrand(), 15), 
+                console.getConsoleReleaseDate(), 
+                console.getAcquisitionDate()));
 
-            sharedString.append("Games:\n");
-            boolean hasGames = false;
+            // Sub-rows for Games
+            boolean firstGame = true;
             for (Game game : allGames) {
                 if (game.getConsoleID() == console.getConsoleID()) {
-                    sharedString.append(" - ").append(game.getGameName())
-                            .append(" (Rel: ").append(game.getGameReleaseDate())
-                            .append(", Acq: ").append(game.getAcquisitionDate()).append(")\n");
-                    hasGames = true;
+                    if (firstGame) {
+                        report.append("   > GAMES:\n");
+                        report.append(String.format("     %-25s | %-12s | %-12s\n", "GAME TITLE", "REL. DATE", "ACQ. DATE"));
+                        firstGame = false;
+                    }
+                    report.append(String.format("     %-25s | %-12s | %-12s\n", 
+                        truncate(game.getGameName(), 25), 
+                        game.getGameReleaseDate(), 
+                        game.getAcquisitionDate()));
                 }
             }
-            if (!hasGames) {
-                sharedString.append(" - No games added\n");
+            if (firstGame) {
+                report.append("   (No games assigned)\n");
             }
-            sharedString.append("\n");
+            report.append("--------------------------------------------------------------------------\n");
         }
 
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, sharedString.toString());
-        sendIntent.putExtra(Intent.EXTRA_TITLE, "My Collection");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, report.toString());
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "Game Collector Collection Report");
         sendIntent.setType("text/plain");
-        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        Intent shareIntent = Intent.createChooser(sendIntent, "Export Report");
         startActivity(shareIntent);
+    }
+
+    private String truncate(String text, int length) {
+        if (text == null) return "N/A";
+        if (text.length() <= length) return text;
+        return text.substring(0, length - 3) + "...";
     }
 }
