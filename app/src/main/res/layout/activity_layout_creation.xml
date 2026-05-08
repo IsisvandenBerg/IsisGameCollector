@@ -22,6 +22,7 @@
             android:hint="Username"
             android:inputType="text"
             android:padding="12dp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,6 +35,7 @@
             android:hint="Email address"
             android:inputType="textEmailAddress"
             android:padding="12dp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/username_create" />
@@ -46,6 +48,7 @@
             android:hint="Password"
             android:inputType="textPassword"
             android:padding="12dp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email_create" />
@@ -58,6 +61,7 @@
             android:hint="Confirm password"
             android:inputType="textPassword"
             android:padding="12dp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password_create" />
@@ -71,7 +75,7 @@
             android:padding="16dp"
             android:text="Requirements:\n• Username: Minimum 5 characters\n• Email: Must be valid\n• Password: Minimum 8 characters\n• Password: At least one uppercase letter\n• Password: At least one lowercase letter\n• Password: At least one digit\n• Password: At least one special character (@#$%^&amp;+=!)"
             android:textColor="#5C4E92"
-            android:textSize="14sp"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password_confirm" />

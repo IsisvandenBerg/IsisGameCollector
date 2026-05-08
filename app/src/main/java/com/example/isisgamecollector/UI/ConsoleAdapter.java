@@ -55,7 +55,7 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
             // We'll reuse the container but use a single TextView for all games to improve performance
             gamesListView = new TextView(context);
             gamesListView.setPadding(32, 8, 16, 16);
-            gamesListView.setTextSize(16);
+            gamesListView.setTextSize(18);
             gamesListView.setLineSpacing(8, 1.2f);
             gamesListView.setTextColor(context.getColor(R.color.purple_primary));
             gameListContainer.addView(gamesListView);

@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:text="Title: "
                     android:textColor="@color/purple_primary"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/titletext"
@@ -42,7 +42,7 @@
                     android:hint="Console title"
                     android:inputType="text"
                     android:minHeight="48dp"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Brand -->
@@ -56,7 +56,7 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Brand: "
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@color/purple_primary" />
 
                 <EditText
@@ -66,7 +66,7 @@
                     android:minHeight="48dp"
                     android:hint="Brand"
                     android:inputType="text"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Release Date -->
@@ -80,7 +80,7 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Rel. Date: "
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@color/purple_primary" />
 
                 <EditText
@@ -92,7 +92,7 @@
                     android:focusable="false"
                     android:clickable="true"
                     android:inputType="date"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Acquisition Date -->
@@ -106,7 +106,7 @@
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Acq. Date: "
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@color/purple_primary" />
 
                 <EditText
@@ -118,7 +118,7 @@
                     android:focusable="false"
                     android:clickable="true"
                     android:inputType="date"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <Button

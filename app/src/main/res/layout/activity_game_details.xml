@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:text="Title: "
                     android:textColor="@color/purple_primary"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/gameNameText"
@@ -40,7 +40,7 @@
                     android:minHeight="48dp"
                     android:hint="Game title"
                     android:inputType="text"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Release Date -->
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="Rel. Date: "
                     android:textColor="@color/purple_primary"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/gameReleaseDateText"
@@ -64,7 +64,7 @@
                     android:minHeight="48dp"
                     android:inputType="date"
                     android:hint="MM/DD/YY"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <!-- Acquisition Date -->
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:text="Acq. Date: "
                     android:textColor="@color/purple_primary"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/gameAcquisitionDateText"
@@ -88,7 +88,7 @@
                     android:minHeight="48dp"
                     android:inputType="date"
                     android:hint="MM/DD/YY"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <Button
