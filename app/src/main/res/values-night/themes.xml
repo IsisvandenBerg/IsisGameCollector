@@ -31,6 +31,12 @@
     <style name="Theme.IsisGameCollector.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@color/purple_primary</item>
         <item name="colorControlNormal">@color/purple_primary</item>
+        <item name="searchViewStyle">@style/Theme.IsisGameCollector.SearchView</item>
+    </style>
+
+    <style name="Theme.IsisGameCollector.SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@android:drawable/ic_menu_search</item>
+        <item name="android:tint">@color/purple_primary</item>
     </style>
 
     <style name="Theme.IsisGameCollector.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
