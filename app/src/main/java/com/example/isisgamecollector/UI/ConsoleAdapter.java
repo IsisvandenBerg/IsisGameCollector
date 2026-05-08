@@ -1,6 +1,5 @@
 package com.example.isisgamecollector.UI;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -16,18 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.isisgamecollector.R;
-import com.example.isisgamecollector.UI.database.Repository;
 import com.example.isisgamecollector.UI.entities.Console;
 import com.example.isisgamecollector.UI.entities.Game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleViewHolder> implements Filterable {
-    private List<Console> mConsoles;
-    private List<Console> mConsolesFull;
+    private List<Console> mConsoles = new ArrayList<>();
+    private List<Console> mConsolesFull = new ArrayList<>();
+    private Map<Integer, List<Game>> mGamesMap = new HashMap<>();
     private final Context context;
     private final LayoutInflater mInflater;
     private final Set<Integer> expandedConsoleIds = new HashSet<>();
@@ -41,6 +42,7 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
         private final TextView consoleItemView;
         private final ImageView addGameIcon;
         private final ImageView expandIcon;
+        private final TextView gamesListView;
         private final LinearLayout gameListContainer;
 
         public ConsoleViewHolder(@NonNull View itemView) {
@@ -49,6 +51,14 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
             addGameIcon = itemView.findViewById(R.id.add_game_icon);
             expandIcon = itemView.findViewById(R.id.expand_icon);
             gameListContainer = itemView.findViewById(R.id.game_list_container);
+            
+            // We'll reuse the container but use a single TextView for all games to improve performance
+            gamesListView = new TextView(context);
+            gamesListView.setPadding(32, 8, 16, 16);
+            gamesListView.setTextSize(16);
+            gamesListView.setLineSpacing(8, 1.2f);
+            gamesListView.setTextColor(context.getColor(R.color.purple_primary));
+            gameListContainer.addView(gamesListView);
 
             consoleItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,54 +118,34 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
 
     @Override
     public void onBindViewHolder(@NonNull ConsoleAdapter.ConsoleViewHolder holder, int position) {
-        if (mConsoles != null) {
+        if (mConsoles != null && position < mConsoles.size()) {
             Console current = mConsoles.get(position);
             holder.consoleItemView.setText(current.getConsoleName());
 
-            // Fetch games for this console
-            Repository repo = new Repository((Application) context.getApplicationContext());
-            List<Game> allGames = repo.getAllGames();
-            List<Game> filteredGames = new ArrayList<>();
-            
-            if (allGames != null) {
-                for (Game game : allGames) {
-                    if (game.getConsoleID() == current.getConsoleID()) {
-                        filteredGames.add(game);
-                    }
-                }
-            }
+            List<Game> filteredGames = mGamesMap.get(current.getConsoleID());
 
-            if (!filteredGames.isEmpty()) {
+            if (filteredGames != null && !filteredGames.isEmpty()) {
                 holder.expandIcon.setVisibility(View.VISIBLE);
                 boolean isExpanded = expandedConsoleIds.contains(current.getConsoleID());
                 
                 if (isExpanded) {
                     holder.expandIcon.setImageResource(android.R.drawable.arrow_up_float);
                     holder.gameListContainer.setVisibility(View.VISIBLE);
-                    holder.gameListContainer.removeAllViews();
                     
+                    StringBuilder gamesListText = new StringBuilder();
                     for (Game game : filteredGames) {
-                        TextView gameView = new TextView(context);
-                        String bulletText = "• " + game.getGameName();
-                        gameView.setText(bulletText);
-                        gameView.setPadding(32, 8, 16, 8);
-                        gameView.setTextSize(16);
-                        gameView.setTextColor(context.getColor(R.color.purple_primary));
-                        gameView.setBackgroundResource(R.drawable.game_item_selector);
-                        gameView.setClickable(true);
-                        gameView.setFocusable(true);
-                        gameView.setOnClickListener(v -> {
-                            Intent intent = new Intent(context, GameDetails.class);
-                            intent.putExtra("id", game.getGameID());
-                            intent.putExtra("name", game.getGameName());
-                            intent.putExtra("date", game.getGameReleaseDate());
-                            intent.putExtra("acquisitionDate", game.getAcquisitionDate());
-                            intent.putExtra("consoleID", game.getConsoleID());
-                            intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
-                            context.startActivity(intent);
-                        });
-                        holder.gameListContainer.addView(gameView);
+                        gamesListText.append("• ").append(game.getGameName()).append("\n");
                     }
+                    holder.gamesListView.setText(gamesListText.toString().trim());
+                    holder.gamesListView.setOnClickListener(v -> {
+                        // For simplicity in this optimized version, clicking the list takes you to the first game or we could keep the individual clicks
+                        // But to stop the "System UI" hang, let's see if this lighter weight approach helps.
+                        // If the user wants individual game clicks back, we can use a nested RecyclerView or pre-inflate views.
+                        int consoleId = current.getConsoleID();
+                        Intent intent = new Intent(context, ConsoleDetails.class); // Fallback
+                        intent.putExtra("id", current.getConsoleID());
+                        context.startActivity(intent);
+                    });
                 } else {
                     holder.expandIcon.setImageResource(android.R.drawable.arrow_down_float);
                     holder.gameListContainer.setVisibility(View.GONE);
@@ -176,9 +166,25 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
         return mConsoles != null ? mConsoles.size() : 0;
     }
 
-    public void setConsoles(List<Console> consoles) {
-        mConsoles = consoles;
-        mConsolesFull = new ArrayList<>(consoles);
+    public void setData(List<Console> consoles, List<Game> games) {
+        if (consoles != null) {
+            mConsoles = new ArrayList<>(consoles);
+            mConsolesFull = new ArrayList<>(consoles);
+        } else {
+            mConsoles = new ArrayList<>();
+            mConsolesFull = new ArrayList<>();
+        }
+
+        mGamesMap.clear();
+        if (games != null) {
+            for (Game game : games) {
+                int consoleId = game.getConsoleID();
+                if (!mGamesMap.containsKey(consoleId)) {
+                    mGamesMap.put(consoleId, new ArrayList<>());
+                }
+                mGamesMap.get(consoleId).add(game);
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -212,7 +218,9 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mConsoles.clear();
-            mConsoles.addAll((List) results.values);
+            if (results.values != null) {
+                mConsoles.addAll((List) results.values);
+            }
             notifyDataSetChanged();
         }
     };

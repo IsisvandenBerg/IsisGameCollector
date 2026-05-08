@@ -76,7 +76,9 @@ public class ConsoleList extends AppCompatActivity {
 
     private void updateList() {
         List<Console> allConsoles = repository.getmAllConsoles();
-        consoleAdapter.setConsoles(allConsoles);
+        List<Game> allGames = repository.getAllGames();
+        
+        consoleAdapter.setData(allConsoles, allGames);
 
         if (allConsoles == null || allConsoles.isEmpty()) {
             emptyStateText.setVisibility(View.VISIBLE);
@@ -92,20 +94,23 @@ public class ConsoleList extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_console_list, menu);
         
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        if (searchItem != null) {
+            SearchView searchView = (SearchView) searchItem.getActionView();
+            if (searchView != null) {
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                consoleAdapter.getFilter().filter(newText);
-                return false;
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        consoleAdapter.getFilter().filter(newText);
+                        return false;
+                    }
+                });
             }
-        });
+        }
         
         return true;
     }
