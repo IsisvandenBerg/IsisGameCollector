@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/share_all"
-        android:title="Generate Report"
+        android:title="Share"
         app:showAsAction="never" />
     <item
         android:id="@+id/logout"
