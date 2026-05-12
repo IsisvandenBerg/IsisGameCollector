@@ -41,7 +41,7 @@ public class ConsoleDetails extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener acquisitionDateListener;
     final Calendar myCalendarStart = Calendar.getInstance();
     final Calendar myCalendarAcquisition = Calendar.getInstance();
-    String myFormat = "MM/dd/yy";
+    String myFormat = "MM/DD/YY";
     SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
     @Override
