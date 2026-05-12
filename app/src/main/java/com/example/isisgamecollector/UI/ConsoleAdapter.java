@@ -42,7 +42,6 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
         private final TextView consoleItemView;
         private final ImageView addGameIcon;
         private final ImageView expandIcon;
-        private final TextView gamesListView;
         private final LinearLayout gameListContainer;
 
         public ConsoleViewHolder(@NonNull View itemView) {
@@ -51,14 +50,6 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
             addGameIcon = itemView.findViewById(R.id.add_game_icon);
             expandIcon = itemView.findViewById(R.id.expand_icon);
             gameListContainer = itemView.findViewById(R.id.game_list_container);
-            
-            // We'll reuse the container but use a single TextView for all games to improve performance
-            gamesListView = new TextView(context);
-            gamesListView.setPadding(32, 8, 16, 16);
-            gamesListView.setTextSize(18);
-            gamesListView.setLineSpacing(8, 1.2f);
-            gamesListView.setTextColor(context.getColor(R.color.purple_primary));
-            gameListContainer.addView(gamesListView);
 
             consoleItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,21 +122,30 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
                 if (isExpanded) {
                     holder.expandIcon.setImageResource(android.R.drawable.arrow_up_float);
                     holder.gameListContainer.setVisibility(View.VISIBLE);
+                    holder.gameListContainer.removeAllViews();
                     
-                    StringBuilder gamesListText = new StringBuilder();
                     for (Game game : filteredGames) {
-                        gamesListText.append("• ").append(game.getGameName()).append("\n");
+                        TextView gameView = new TextView(context);
+                        String bulletText = "• " + game.getGameName();
+                        gameView.setText(bulletText);
+                        gameView.setPadding(32, 12, 16, 12); // Slightly more padding
+                        gameView.setTextSize(18);
+                        gameView.setTextColor(context.getColor(R.color.purple_primary));
+                        gameView.setBackgroundResource(R.drawable.game_item_selector);
+                        gameView.setClickable(true);
+                        gameView.setFocusable(true);
+                        gameView.setOnClickListener(v -> {
+                            Intent intent = new Intent(context, GameDetails.class);
+                            intent.putExtra("id", game.getGameID());
+                            intent.putExtra("name", game.getGameName());
+                            intent.putExtra("date", game.getGameReleaseDate());
+                            intent.putExtra("acquisitionDate", game.getAcquisitionDate());
+                            intent.putExtra("consoleID", game.getConsoleID());
+                            intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
+                            context.startActivity(intent);
+                        });
+                        holder.gameListContainer.addView(gameView);
                     }
-                    holder.gamesListView.setText(gamesListText.toString().trim());
-                    holder.gamesListView.setOnClickListener(v -> {
-                        // For simplicity in this optimized version, clicking the list takes you to the first game or we could keep the individual clicks
-                        // But to stop the "System UI" hang, let's see if this lighter weight approach helps.
-                        // If the user wants individual game clicks back, we can use a nested RecyclerView or pre-inflate views.
-                        int consoleId = current.getConsoleID();
-                        Intent intent = new Intent(context, ConsoleDetails.class); // Fallback
-                        intent.putExtra("id", current.getConsoleID());
-                        context.startActivity(intent);
-                    });
                 } else {
                     holder.expandIcon.setImageResource(android.R.drawable.arrow_down_float);
                     holder.gameListContainer.setVisibility(View.GONE);
