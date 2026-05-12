@@ -204,7 +204,32 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (Console item : mConsolesFull) {
-                    if (item.getConsoleName().toLowerCase().contains(filterPattern)) {
+                    boolean match = false;
+                    
+                    // Check console features
+                    if (item.getConsoleName().toLowerCase().contains(filterPattern) ||
+                        item.getConsoleBrand().toLowerCase().contains(filterPattern) ||
+                        item.getConsoleReleaseDate().toLowerCase().contains(filterPattern) ||
+                        item.getAcquisitionDate().toLowerCase().contains(filterPattern)) {
+                        match = true;
+                    }
+                    
+                    // Check associated games' features
+                    if (!match) {
+                        List<Game> associatedGames = mGamesMap.get(item.getConsoleID());
+                        if (associatedGames != null) {
+                            for (Game game : associatedGames) {
+                                if (game.getGameName().toLowerCase().contains(filterPattern) ||
+                                    game.getGameReleaseDate().toLowerCase().contains(filterPattern) ||
+                                    game.getAcquisitionDate().toLowerCase().contains(filterPattern)) {
+                                    match = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (match) {
                         filteredList.add(item);
                     }
                 }
