@@ -32,6 +32,7 @@ public class ConsoleList extends AppCompatActivity {
     private ConsoleAdapter consoleAdapter;
     private RecyclerView recyclerView;
     private TextView emptyStateText;
+    private TextView statsContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class ConsoleList extends AppCompatActivity {
         setContentView(R.layout.activity_console_list);
 
         emptyStateText = findViewById(R.id.empty_state_text);
+        statsContent = findViewById(R.id.stats_content);
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,12 +82,27 @@ public class ConsoleList extends AppCompatActivity {
         
         consoleAdapter.setData(allConsoles, allGames);
 
+        updateStats(allConsoles, allGames);
+
         if (allConsoles == null || allConsoles.isEmpty()) {
             emptyStateText.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         } else {
             emptyStateText.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void updateStats(List<Console> consoles, List<Game> games) {
+        int consoleCount = (consoles != null) ? consoles.size() : 0;
+        int gameCount = (games != null) ? games.size() : 0;
+        
+        String statsText = String.format(Locale.getDefault(), 
+            "Consoles: %d | Games: %d", 
+            consoleCount, gameCount);
+        
+        if (statsContent != null) {
+            statsContent.setText(statsText);
         }
     }
 

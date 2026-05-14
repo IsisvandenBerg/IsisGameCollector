@@ -8,6 +8,46 @@
     android:background="#B5A8E4"
     tools:context=".UI.ConsoleList">
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/stats_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/lavender"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/stats_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Overview"
+                android:textColor="@color/purple_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/stats_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading statistics..."
+                android:textColor="@color/purple_primary"
+                android:textSize="18sp"
+                android:textAlignment="center"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <TextView
         android:id="@+id/empty_state_text"
         android:layout_width="wrap_content"
@@ -19,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/stats_card" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
@@ -30,7 +70,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/stats_card" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
