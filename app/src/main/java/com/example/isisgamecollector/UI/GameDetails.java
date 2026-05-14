@@ -221,16 +221,27 @@ public class GameDetails extends AppCompatActivity {
         }
 
         if (item.getItemId() == R.id.gamedelete) {
-            for (Game game : repository.getAllGames()) {
-                if (game.getGameID() == gameID) {
-                    repository.delete(game);
-                    Toast.makeText(this, "Game deleted successfully", Toast.LENGTH_LONG).show();
-                    this.finish();
-                }
-            }
+            confirmDeleteGame();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void confirmDeleteGame() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete Game")
+                .setMessage("Are you sure you want to delete this game? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    for (Game game : repository.getAllGames()) {
+                        if (game.getGameID() == gameID) {
+                            repository.delete(game);
+                            Toast.makeText(this, "Game deleted successfully", Toast.LENGTH_LONG).show();
+                            this.finish();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

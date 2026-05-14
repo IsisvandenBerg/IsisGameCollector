@@ -182,27 +182,38 @@ public class ConsoleDetails extends AppCompatActivity {
             return true;
         }
         if (item.getItemId() == R.id.consoledelete) {
-            for (Console con : repository.getmAllConsoles()) {
-                if (con.getConsoleID() == consoleID) {
-                    List<Game> games = repository.getAllGames();
-                    boolean hasGames = false;
-                    for (Game game : games) {
-                        if (game.getConsoleID() == consoleID) {
-                            hasGames = true;
-                            break;
-                        }
-                    }
-                    if (hasGames) {
-                        Toast.makeText(this, "Cannot delete console with associated games", Toast.LENGTH_LONG).show();
-                    } else {
-                        repository.delete(con);
-                        Toast.makeText(this, "Console deleted", Toast.LENGTH_LONG).show();
-                        this.finish();
-                    }
-                }
-            }
+            confirmDeleteConsole();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void confirmDeleteConsole() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete Console")
+                .setMessage("Are you sure you want to delete this console? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    for (Console con : repository.getmAllConsoles()) {
+                        if (con.getConsoleID() == consoleID) {
+                            List<Game> games = repository.getAllGames();
+                            boolean hasGames = false;
+                            for (Game game : games) {
+                                if (game.getConsoleID() == consoleID) {
+                                    hasGames = true;
+                                    break;
+                                }
+                            }
+                            if (hasGames) {
+                                Toast.makeText(this, "Cannot delete console with associated games", Toast.LENGTH_LONG).show();
+                            } else {
+                                repository.delete(con);
+                                Toast.makeText(this, "Console deleted", Toast.LENGTH_LONG).show();
+                                this.finish();
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }
