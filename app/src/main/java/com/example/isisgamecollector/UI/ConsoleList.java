@@ -114,6 +114,7 @@ public class ConsoleList extends AppCompatActivity {
         if (searchItem != null) {
             SearchView searchView = (SearchView) searchItem.getActionView();
             if (searchView != null) {
+                searchView.setQueryHint("Search consoles and games...");
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -122,7 +123,9 @@ public class ConsoleList extends AppCompatActivity {
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        consoleAdapter.getFilter().filter(newText);
+                        if (consoleAdapter != null) {
+                            consoleAdapter.getFilter().filter(newText);
+                        }
                         return false;
                     }
                 });

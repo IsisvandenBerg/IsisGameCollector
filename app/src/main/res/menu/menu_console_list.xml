@@ -7,7 +7,7 @@
         android:title="Search"
         app:iconTint="@color/purple_primary"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/share_all"
         android:title="Share"
