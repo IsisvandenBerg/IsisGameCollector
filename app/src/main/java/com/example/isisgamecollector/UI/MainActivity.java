@@ -42,8 +42,12 @@ public class MainActivity extends AppCompatActivity {
                 String username = editUsername.getText().toString().trim();
                 String password = editPassword.getText().toString();
 
-                if (username.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+                if (username.isEmpty()) {
+                    editUsername.setError("Username is required");
+                    return;
+                }
+                if (password.isEmpty()) {
+                    editPassword.setError("Password is required");
                     return;
                 }
 

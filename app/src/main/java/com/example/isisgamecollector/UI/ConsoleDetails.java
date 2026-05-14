@@ -104,8 +104,31 @@ public class ConsoleDetails extends AppCompatActivity {
     }
 
     private void saveConsole() {
-        String releaseStr = editReleaseDate.getText().toString();
-        String acquisitionStr = editAcquisitionDate.getText().toString();
+        String consoleName = editName.getText().toString().trim();
+        String consoleBrand = editBrand.getText().toString().trim();
+        String releaseStr = editReleaseDate.getText().toString().trim();
+        String acquisitionStr = editAcquisitionDate.getText().toString().trim();
+
+        if (consoleName.isEmpty()) {
+            editName.setError("Console title is required");
+            return;
+        }
+
+        if (consoleBrand.isEmpty()) {
+            editBrand.setError("Brand is required");
+            return;
+        }
+
+        if (releaseStr.isEmpty()) {
+            editReleaseDate.setError("Release date is required");
+            return;
+        }
+
+        if (acquisitionStr.isEmpty()) {
+            editAcquisitionDate.setError("Acquisition date is required");
+            return;
+        }
+
         Date releaseD, acquisitionD;
         try {
             releaseD = sdf.parse(releaseStr);

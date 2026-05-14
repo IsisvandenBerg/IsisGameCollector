@@ -44,18 +44,23 @@ public class PasswordResetActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = editEmail.getText().toString().trim();
 
-                if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    Toast.makeText(PasswordResetActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+                if (email.isEmpty()) {
+                    editEmail.setError("Email is required");
+                    return;
+                }
+
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    editEmail.setError("Please enter a valid email address");
                     return;
                 }
 
                 User user = repository.getUserByEmail(email);
                 if (user != null) {
                     // Logic to send reset link would go here
-                    Toast.makeText(PasswordResetActivity.this, "A reset link has been sent", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PasswordResetActivity.this, "A reset link has been sent to " + email, Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Toast.makeText(PasswordResetActivity.this, "No account found with this email", Toast.LENGTH_SHORT).show();
+                    editEmail.setError("No account found with this email");
                 }
             }
         });

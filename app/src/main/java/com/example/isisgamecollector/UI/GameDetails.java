@@ -135,8 +135,25 @@ public class GameDetails extends AppCompatActivity {
     }
 
     private void saveGame() {
-        String gameDateStr = editDate.getText().toString();
-        String acqDateStr = editAcquisitionDate.getText().toString();
+        String gameTitle = editName.getText().toString().trim();
+        String gameDateStr = editDate.getText().toString().trim();
+        String acqDateStr = editAcquisitionDate.getText().toString().trim();
+
+        if (gameTitle.isEmpty()) {
+            editName.setError("Game title is required");
+            return;
+        }
+
+        if (gameDateStr.isEmpty()) {
+            editDate.setError("Release date is required");
+            return;
+        }
+
+        if (acqDateStr.isEmpty()) {
+            editAcquisitionDate.setError("Acquisition date is required");
+            return;
+        }
+
         Date gameD, acqD;
         try {
             gameD = sdf.parse(gameDateStr);

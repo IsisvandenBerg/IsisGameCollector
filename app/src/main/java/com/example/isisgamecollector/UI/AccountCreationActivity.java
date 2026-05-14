@@ -59,32 +59,32 @@ public class AccountCreationActivity extends AppCompatActivity {
                 String confirmPassword = editConfirmPassword.getText().toString();
 
                 if (!validateUsername(username)) {
-                    Toast.makeText(AccountCreationActivity.this, "Username must be at least 5 characters", Toast.LENGTH_SHORT).show();
+                    editUsername.setError("Username must be at least 5 characters");
                     return;
                 }
 
                 if (!validateEmail(email)) {
-                    Toast.makeText(AccountCreationActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+                    editEmail.setError("Please enter a valid email address");
                     return;
                 }
 
                 if (!validatePassword(password)) {
-                    Toast.makeText(AccountCreationActivity.this, "Password does not meet requirements", Toast.LENGTH_SHORT).show();
+                    editPassword.setError("Password does not meet requirements (8+ chars, upper, lower, digit, special)");
                     return;
                 }
 
                 if (!password.equals(confirmPassword)) {
-                    Toast.makeText(AccountCreationActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    editConfirmPassword.setError("Passwords do not match");
                     return;
                 }
 
                 if (repository.getUserByUsername(username) != null) {
-                    Toast.makeText(AccountCreationActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                    editUsername.setError("Username already exists");
                     return;
                 }
 
                 if (repository.getUserByEmail(email) != null) {
-                    Toast.makeText(AccountCreationActivity.this, "An account with this email already exists", Toast.LENGTH_SHORT).show();
+                    editEmail.setError("An account with this email already exists");
                     return;
                 }
 
