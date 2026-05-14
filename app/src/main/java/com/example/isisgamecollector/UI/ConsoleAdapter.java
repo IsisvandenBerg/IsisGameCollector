@@ -25,17 +25,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleViewHolder> implements Filterable {
-    private List<Console> mConsoles = new ArrayList<>();
+public class ConsoleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
+    private static final int TYPE_CONSOLE = 0;
+    private static final int TYPE_GAME = 1;
+
+    private List<Object> mDisplayList = new ArrayList<>();
     private List<Console> mConsolesFull = new ArrayList<>();
+    private List<Game> mAllGamesFull = new ArrayList<>();
     private Map<Integer, List<Game>> mGamesMap = new HashMap<>();
+    
     private final Context context;
     private final LayoutInflater mInflater;
     private final Set<Integer> expandedConsoleIds = new HashSet<>();
+    private boolean isSearching = false;
 
     public ConsoleAdapter(Context context) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mDisplayList.get(position) instanceof Console) {
+            return TYPE_CONSOLE;
+        } else {
+            return TYPE_GAME;
+        }
     }
 
     public class ConsoleViewHolder extends RecyclerView.ViewHolder {
@@ -51,50 +66,72 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
             expandIcon = itemView.findViewById(R.id.expand_icon);
             gameListContainer = itemView.findViewById(R.id.game_list_container);
 
-            consoleItemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        final Console current = mConsoles.get(position);
-                        Intent intent = new Intent(context, ConsoleDetails.class);
-                        intent.putExtra("id", current.getConsoleID());
-                        intent.putExtra("consoleName", current.getConsoleName());
-                        intent.putExtra("consoleBrand", current.getConsoleBrand());
-                        intent.putExtra("consoleReleaseDate", current.getConsoleReleaseDate());
-                        intent.putExtra("acquisitionDate", current.getAcquisitionDate());
-                        context.startActivity(intent);
-                    }
+            consoleItemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && mDisplayList.get(position) instanceof Console) {
+                    final Console current = (Console) mDisplayList.get(position);
+                    Intent intent = new Intent(context, ConsoleDetails.class);
+                    intent.putExtra("id", current.getConsoleID());
+                    intent.putExtra("consoleName", current.getConsoleName());
+                    intent.putExtra("consoleBrand", current.getConsoleBrand());
+                    intent.putExtra("consoleReleaseDate", current.getConsoleReleaseDate());
+                    intent.putExtra("acquisitionDate", current.getAcquisitionDate());
+                    context.startActivity(intent);
                 }
             });
 
-            addGameIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        final Console current = mConsoles.get(position);
-                        Intent intent = new Intent(context, GameDetails.class);
-                        intent.putExtra("consoleID", current.getConsoleID());
-                        intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
-                        context.startActivity(intent);
-                    }
+            addGameIcon.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && mDisplayList.get(position) instanceof Console) {
+                    final Console current = (Console) mDisplayList.get(position);
+                    Intent intent = new Intent(context, GameDetails.class);
+                    intent.putExtra("consoleID", current.getConsoleID());
+                    intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
+                    context.startActivity(intent);
                 }
             });
 
-            expandIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        int consoleId = mConsoles.get(position).getConsoleID();
-                        if (expandedConsoleIds.contains(consoleId)) {
-                            expandedConsoleIds.remove(consoleId);
-                        } else {
-                            expandedConsoleIds.add(consoleId);
+            expandIcon.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && mDisplayList.get(position) instanceof Console) {
+                    int consoleId = ((Console) mDisplayList.get(position)).getConsoleID();
+                    if (expandedConsoleIds.contains(consoleId)) {
+                        expandedConsoleIds.remove(consoleId);
+                    } else {
+                        expandedConsoleIds.add(consoleId);
+                    }
+                    notifyItemChanged(position);
+                }
+            });
+        }
+    }
+
+    public class GameViewHolder extends RecyclerView.ViewHolder {
+        private final TextView gameTitleView;
+
+        public GameViewHolder(@NonNull View itemView) {
+            super(itemView);
+            gameTitleView = itemView.findViewById(R.id.game_title_standalone);
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && mDisplayList.get(position) instanceof Game) {
+                    final Game game = (Game) mDisplayList.get(position);
+                    Intent intent = new Intent(context, GameDetails.class);
+                    intent.putExtra("id", game.getGameID());
+                    intent.putExtra("name", game.getGameName());
+                    intent.putExtra("date", game.getGameReleaseDate());
+                    intent.putExtra("acquisitionDate", game.getAcquisitionDate());
+                    intent.putExtra("consoleID", game.getConsoleID());
+                    
+                    // Find associated console release date
+                    for (Console console : mConsolesFull) {
+                        if (console.getConsoleID() == game.getConsoleID()) {
+                            intent.putExtra("consoleRelease", console.getConsoleReleaseDate());
+                            break;
                         }
-                        notifyItemChanged(position);
                     }
+                    context.startActivity(intent);
                 }
             });
         }
@@ -102,78 +139,89 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
 
     @NonNull
     @Override
-    public ConsoleAdapter.ConsoleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.console_list_item, parent, false);
-        return new ConsoleViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_CONSOLE) {
+            View itemView = mInflater.inflate(R.layout.console_list_item, parent, false);
+            return new ConsoleViewHolder(itemView);
+        } else {
+            View itemView = mInflater.inflate(R.layout.game_standalone_item, parent, false);
+            return new GameViewHolder(itemView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ConsoleAdapter.ConsoleViewHolder holder, int position) {
-        if (mConsoles != null && position < mConsoles.size()) {
-            Console current = mConsoles.get(position);
-            holder.consoleItemView.setText(current.getConsoleName());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Object item = mDisplayList.get(position);
 
-            List<Game> filteredGames = mGamesMap.get(current.getConsoleID());
+        if (holder instanceof ConsoleViewHolder) {
+            ConsoleViewHolder consoleHolder = (ConsoleViewHolder) holder;
+            Console current = (Console) item;
+            consoleHolder.consoleItemView.setText(current.getConsoleName());
 
-            if (filteredGames != null && !filteredGames.isEmpty()) {
-                holder.expandIcon.setVisibility(View.VISIBLE);
-                boolean isExpanded = expandedConsoleIds.contains(current.getConsoleID());
-                
-                if (isExpanded) {
-                    holder.expandIcon.setImageResource(android.R.drawable.arrow_up_float);
-                    holder.gameListContainer.setVisibility(View.VISIBLE);
-                    holder.gameListContainer.removeAllViews();
+            if (isSearching) {
+                // Hide expansion logic in search mode
+                consoleHolder.expandIcon.setVisibility(View.GONE);
+                consoleHolder.gameListContainer.setVisibility(View.GONE);
+            } else {
+                List<Game> filteredGames = mGamesMap.get(current.getConsoleID());
+                if (filteredGames != null && !filteredGames.isEmpty()) {
+                    consoleHolder.expandIcon.setVisibility(View.VISIBLE);
+                    boolean isExpanded = expandedConsoleIds.contains(current.getConsoleID());
                     
-                    for (Game game : filteredGames) {
-                        TextView gameView = new TextView(context);
-                        String bulletText = "• " + game.getGameName();
-                        gameView.setText(bulletText);
-                        gameView.setPadding(32, 12, 16, 12); // Slightly more padding
-                        gameView.setTextSize(18);
-                        gameView.setTextColor(context.getColor(R.color.purple_primary));
-                        gameView.setBackgroundResource(R.drawable.game_item_selector);
-                        gameView.setClickable(true);
-                        gameView.setFocusable(true);
-                        gameView.setOnClickListener(v -> {
-                            Intent intent = new Intent(context, GameDetails.class);
-                            intent.putExtra("id", game.getGameID());
-                            intent.putExtra("name", game.getGameName());
-                            intent.putExtra("date", game.getGameReleaseDate());
-                            intent.putExtra("acquisitionDate", game.getAcquisitionDate());
-                            intent.putExtra("consoleID", game.getConsoleID());
-                            intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
-                            context.startActivity(intent);
-                        });
-                        holder.gameListContainer.addView(gameView);
+                    if (isExpanded) {
+                        consoleHolder.expandIcon.setImageResource(android.R.drawable.arrow_up_float);
+                        consoleHolder.gameListContainer.setVisibility(View.VISIBLE);
+                        consoleHolder.gameListContainer.removeAllViews();
+                        
+                        for (Game game : filteredGames) {
+                            TextView gameView = new TextView(context);
+                            String bulletText = "• " + game.getGameName();
+                            gameView.setText(bulletText);
+                            gameView.setPadding(32, 12, 16, 12);
+                            gameView.setTextSize(18);
+                            gameView.setTextColor(context.getColor(R.color.purple_primary));
+                            gameView.setBackgroundResource(R.drawable.game_item_selector);
+                            gameView.setClickable(true);
+                            gameView.setFocusable(true);
+                            gameView.setOnClickListener(v -> {
+                                Intent intent = new Intent(context, GameDetails.class);
+                                intent.putExtra("id", game.getGameID());
+                                intent.putExtra("name", game.getGameName());
+                                intent.putExtra("date", game.getGameReleaseDate());
+                                intent.putExtra("acquisitionDate", game.getAcquisitionDate());
+                                intent.putExtra("consoleID", game.getConsoleID());
+                                intent.putExtra("consoleRelease", current.getConsoleReleaseDate());
+                                context.startActivity(intent);
+                            });
+                            consoleHolder.gameListContainer.addView(gameView);
+                        }
+                    } else {
+                        consoleHolder.expandIcon.setImageResource(android.R.drawable.arrow_down_float);
+                        consoleHolder.gameListContainer.setVisibility(View.GONE);
                     }
                 } else {
-                    holder.expandIcon.setImageResource(android.R.drawable.arrow_down_float);
-                    holder.gameListContainer.setVisibility(View.GONE);
+                    consoleHolder.expandIcon.setVisibility(View.GONE);
+                    consoleHolder.gameListContainer.setVisibility(View.GONE);
                 }
-            } else {
-                holder.expandIcon.setVisibility(View.GONE);
-                holder.gameListContainer.setVisibility(View.GONE);
             }
-        } else {
-            holder.consoleItemView.setText("No console name");
-            holder.expandIcon.setVisibility(View.GONE);
-            holder.gameListContainer.setVisibility(View.GONE);
+        } else if (holder instanceof GameViewHolder) {
+            GameViewHolder gameHolder = (GameViewHolder) holder;
+            Game current = (Game) item;
+            gameHolder.gameTitleView.setText(current.getGameName());
         }
     }
 
     @Override
     public int getItemCount() {
-        return mConsoles != null ? mConsoles.size() : 0;
+        return mDisplayList.size();
     }
 
     public void setData(List<Console> consoles, List<Game> games) {
-        if (consoles != null) {
-            mConsoles = new ArrayList<>(consoles);
-            mConsolesFull = new ArrayList<>(consoles);
-        } else {
-            mConsoles = new ArrayList<>();
-            mConsolesFull = new ArrayList<>();
-        }
+        mConsolesFull = new ArrayList<>(consoles);
+        mAllGamesFull = new ArrayList<>(games);
+        
+        mDisplayList.clear();
+        mDisplayList.addAll(mConsolesFull);
 
         mGamesMap.clear();
         if (games != null) {
@@ -185,6 +233,7 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
                 mGamesMap.get(consoleId).add(game);
             }
         }
+        isSearching = false;
         notifyDataSetChanged();
     }
 
@@ -196,41 +245,29 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
     private final Filter consoleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Console> filteredList = new ArrayList<>();
+            List<Object> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(mConsolesFull);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
+                // Find matching consoles
                 for (Console item : mConsolesFull) {
-                    boolean match = false;
-                    
-                    // Check console features
                     if (item.getConsoleName().toLowerCase().contains(filterPattern) ||
                         item.getConsoleBrand().toLowerCase().contains(filterPattern) ||
                         item.getConsoleReleaseDate().toLowerCase().contains(filterPattern) ||
                         item.getAcquisitionDate().toLowerCase().contains(filterPattern)) {
-                        match = true;
-                    }
-                    
-                    // Check associated games' features
-                    if (!match) {
-                        List<Game> associatedGames = mGamesMap.get(item.getConsoleID());
-                        if (associatedGames != null) {
-                            for (Game game : associatedGames) {
-                                if (game.getGameName().toLowerCase().contains(filterPattern) ||
-                                    game.getGameReleaseDate().toLowerCase().contains(filterPattern) ||
-                                    game.getAcquisitionDate().toLowerCase().contains(filterPattern)) {
-                                    match = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (match) {
                         filteredList.add(item);
+                    }
+                }
+                
+                // Find matching games independently
+                for (Game game : mAllGamesFull) {
+                    if (game.getGameName().toLowerCase().contains(filterPattern) ||
+                        game.getGameReleaseDate().toLowerCase().contains(filterPattern) ||
+                        game.getAcquisitionDate().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(game);
                     }
                 }
             }
@@ -242,10 +279,11 @@ public class ConsoleAdapter extends RecyclerView.Adapter<ConsoleAdapter.ConsoleV
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            mConsoles.clear();
+            mDisplayList.clear();
             if (results.values != null) {
-                mConsoles.addAll((List) results.values);
+                mDisplayList.addAll((List) results.values);
             }
+            isSearching = (constraint != null && constraint.length() > 0);
             notifyDataSetChanged();
         }
     };
