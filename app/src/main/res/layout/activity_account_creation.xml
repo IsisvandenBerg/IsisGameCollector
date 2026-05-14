@@ -77,7 +77,7 @@
             android:layout_marginTop="24dp"
             android:background="#E6E1F7"
             android:padding="16dp"
-            android:text="Requirements:\n• Username: Minimum 5 characters\n• Email: Must be valid\n• Password: Minimum 8 characters\n• Password: At least one uppercase letter\n• Password: At least one lowercase letter\n• Password: At least one digit\n• Password: At least one special character (@#$%^&amp;+=!)"
+            android:text="Requirements:\n• Username: Minimum 5 characters\n• Email: Must be valid\n• Password: Minimum 8 characters, at least one uppercase and one lowercase letter, at least one digit and at least one special character (@#$%^&amp;+=!)"
             android:textColor="#5C4E92"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
